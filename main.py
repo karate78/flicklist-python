@@ -12,7 +12,7 @@ page_header = """
     <h1>FlickList</h1>
 """
 
-# html boilerplate for the bottom of every page
+
 page_footer = """
 </body>
 </html>
@@ -27,7 +27,7 @@ class Index(webapp2.RequestHandler):
 
         edit_header = "<h3>Edit My Watchlist</h3>"
 
-        # a form for adding new movies
+
         add_form = """
         <form action="/add" method="post">
             <label>
@@ -38,17 +38,27 @@ class Index(webapp2.RequestHandler):
             <input type="submit" value="Add It"/>
         </form>
         """
+        cross_form = """
+        <form action="/cross" method="post">
+            <label>
+                I want to cross off
+                <select name="cross-off-movie">
+                    <option value="Star Wars">Star Wars</option>
+                    <option value="Terminator">Terminator</option>
+                    <option value="Return of the Jedi">Return of the Jedi</option>
+                    <option value="Timecop">Timecop</option>
+                </select>
+            </label>
+            <input type="submit" value="Cross It Off"/>
 
-        # TODO 1
-        # Include another form so the user can "cross off" a movie from their list.
+
+        </form>
+        """
 
 
-        # TODO 4 (Extra Credit)
-        # modify your form to use a dropdown (<select>) instead a
-        # text box (<input type="text"/>)
 
 
-        content = page_header + edit_header + add_form + page_footer
+        content = page_header + edit_header + add_form + cross_form + page_footer
         self.response.write(content)
 
 
@@ -58,27 +68,33 @@ class AddMovie(webapp2.RequestHandler):
     """
 
     def post(self):
-        # look inside the request to figure out what the user typed
+
         new_movie = self.request.get("new-movie")
 
-        # build response content
+
         new_movie_element = "<strong>" + new_movie + "</strong>"
         sentence = new_movie_element + " has been added to your Watchlist!"
 
         content = page_header + "<p>" + sentence + "</p>" + page_footer
         self.response.write(content)
 
+class CrossOffMovie(webapp2.RequestHandler):
+    """ Crosses off movies from your watchlist"""
 
-# TODO 2
-# Create a new RequestHandler class called CrossOffMovie, to receive and
-# handle the request from your 'cross-off' form. The user should see a message like:
-# "Star Wars has been crossed off your watchlist".
+    def post(self):
+
+        Cross_Off_Movie = self.request.get("cross-off-movie")
 
 
+        cross_off_element = "<strike>" + Cross_Off_Movie + "</strike>"
+        sentence = cross_off_element + " has been crossed off your Watchlist!"
 
-# TODO 3
-# Include a route for your cross-off handler, by adding another tuple to the list below.
+        content = page_header + "<p>" + sentence + "</p>" + page_footer
+        self.response.write(content)
+
+
 app = webapp2.WSGIApplication([
     ('/', Index),
     ('/add', AddMovie)
+    ('/cross', CrossOffMovie)
 ], debug=True)
